@@ -1,1 +1,1 @@
-rootProject.name = "Kotlin_Back"
+rootProject.name = "echap-o-pital_backend"
