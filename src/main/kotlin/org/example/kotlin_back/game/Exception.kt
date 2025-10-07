@@ -1,4 +1,4 @@
-package org.example.kotlin_back.entity
+package org.example.kotlin_back.game
 
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ResponseStatus

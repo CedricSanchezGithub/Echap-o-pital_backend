@@ -1,7 +1,5 @@
-package org.example.kotlin_back.controler
+package org.example.kotlin_back.story
 
-import org.example.kotlin_back.entity.StoryRequest
-import org.example.kotlin_back.service.StoryGeneratorService
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping

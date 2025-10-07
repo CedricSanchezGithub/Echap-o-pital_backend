@@ -1,4 +1,4 @@
-package org.example.kotlin_back.entity
+package org.example.kotlin_back.story
 
 data class StoryRequest(
     val symptome: String,

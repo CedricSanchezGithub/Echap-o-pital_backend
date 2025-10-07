@@ -1,4 +1,4 @@
-package org.example.kotlin_back.service
+package org.example.kotlin_back.story
 
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
