@@ -38,7 +38,7 @@ class MabouleService(
         emitters[gameId]?.send(
             SseEmitter.event()
                 .name("error-event")
-                .data(GameEvent(totalErrors = totalErrors))
+                .data(MabouleEvent(totalErrors = totalErrors))
         )
     }
 }

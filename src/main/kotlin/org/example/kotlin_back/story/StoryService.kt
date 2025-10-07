@@ -9,10 +9,10 @@ import org.springframework.web.client.postForEntity
 import java.util.logging.Logger
 
 @Service
-class StoryGeneratorService {
-    companion object {
+class StoryService {
+    companion object Companion {
         private const val IA_API_URL = "http://localhost:5000/generate"
-        private val LOG = Logger.getLogger(StoryGeneratorService::class.java.name)
+        private val LOG = Logger.getLogger(StoryService::class.java.name)
     }
 
     fun generateStory(symptome: String, salle: String, etat: String): String {

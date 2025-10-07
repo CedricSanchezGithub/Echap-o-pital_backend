@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/story")
 class StoryController(
 
-    private val storyService: StoryGeneratorService
+    private val storyService: StoryService
 ) {
 
     @PostMapping("/generate")
