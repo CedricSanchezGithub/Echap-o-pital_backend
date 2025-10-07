@@ -24,3 +24,4 @@ Par défaut, l'application utilise MySQL avec les variables d'environnement inje
 En local (sans Docker), la configuration par défaut pointe sur `localhost:3306` (voir `src/main/resources/application.properties`).
 # Echap-o-pital_IA
 # Echap-o-pital_IA
+# Echap-o-pital_IA
