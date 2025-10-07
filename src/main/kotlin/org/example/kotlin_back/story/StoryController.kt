@@ -14,6 +14,10 @@ class StoryController(
 
     @PostMapping("/generate")
     fun generateStory(@RequestBody request: StoryRequest): String {
-        return storyService.generateStory(request.symptome, request.salle, request.etat)
+        return storyService.generateStory(
+            symptome = request.symptome,
+            salle = request.salle,
+            etat = request.etat
+        )
     }
 }

@@ -11,7 +11,7 @@ import java.util.logging.Logger
 @Service
 class StoryService {
     companion object Companion {
-        private const val IA_API_URL = "http://localhost:5000/generate"
+        private const val IA_API_URL = "http://localhost:5001/generate"
         private val LOG = Logger.getLogger(StoryService::class.java.name)
     }
 
