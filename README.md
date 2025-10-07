@@ -25,3 +25,4 @@ En local (sans Docker), la configuration par défaut pointe sur `localhost:3306`
 # Echap-o-pital_IA
 # Echap-o-pital_IA
 # Echap-o-pital_IA
+# Echap-o-pital_IA
