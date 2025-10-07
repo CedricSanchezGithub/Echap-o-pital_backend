@@ -1,5 +1,6 @@
 package org.example.kotlin_back.story
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -9,9 +10,10 @@ import org.springframework.web.client.postForEntity
 import java.util.logging.Logger
 
 @Service
-class StoryService {
-    companion object Companion {
-        private const val IA_API_URL = "http://localhost:5001/generate"
+class StoryService(
+    @Value("\${ia.api.url}") private val iaApiUrl: String
+) {
+    companion object {
         private val LOG = Logger.getLogger(StoryService::class.java.name)
     }
 
@@ -31,14 +33,13 @@ class StoryService {
         val requestEntity = HttpEntity(requestBody, headers)
 
         return try {
-            val response = restTemplate.postForEntity<Map<*, *>>(IA_API_URL, requestEntity)
+            val response = restTemplate.postForEntity<Map<*, *>>(iaApiUrl, requestEntity)
             val body = response.body
-            val texte = body?.get("texte") as? String // Safe cast
+            val texte = body?.get("texte") as? String
 
             texte ?: "Erreur : le texte généré est manquant ou invalide dans la réponse."
-
         } catch (e: Exception) {
-            LOG.severe("Erreur de communication avec le générateur d'histoire IA: ${e.message}")
+            LOG.severe("Erreur de communication avec le générateur d'histoire IA à l'URL $iaApiUrl: ${e.message}")
             "Erreur de communication avec le générateur d’histoire IA."
         }
     }

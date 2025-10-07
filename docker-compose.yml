@@ -28,7 +28,8 @@ services:
       - "5001:5001"
     networks:
       - app-net
-
+    volumes:
+      - ./ia_data:/app
   app:
     image: cedsanc/echapopitalbackend:latest
     container_name: echapopitalbackend
