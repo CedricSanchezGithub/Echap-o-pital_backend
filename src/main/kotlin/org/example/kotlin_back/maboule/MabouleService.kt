@@ -1,31 +1,44 @@
 package org.example.kotlin_back.maboule
 
+import org.example.kotlin_back.game.GameStatus
+import org.example.kotlin_back.game.GameNotFoundException
+import org.example.kotlin_back.game.GameRepository
 import org.springframework.stereotype.Service
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 import java.util.concurrent.ConcurrentHashMap
 
 @Service
-class MabouleService {
-
+class MabouleService(
+    private val gameRepository: GameRepository,
+    private val mabouleRepository: MabouleRepository
+) {
     private val emitters = ConcurrentHashMap<String, SseEmitter>()
 
-    fun createEmitter(gameId: String): SseEmitter {
-
-        val emitter = SseEmitter(600_000L)
-
-        emitters[gameId] = emitter
+    fun subscribeToGameEvents(gameId: String): SseEmitter {
+        val emitter = SseEmitter(Long.MAX_VALUE)
         emitter.onCompletion { emitters.remove(gameId) }
         emitter.onTimeout { emitters.remove(gameId) }
         emitter.onError { emitters.remove(gameId) }
-
+        emitters[gameId] = emitter
         return emitter
     }
 
-    fun sendEvent(gameId: String, data: Any) {
+    fun recordError(gameId: String) {
+        val game = gameRepository.findById(gameId)
+            .orElseThrow { GameNotFoundException("Game not found with id: $gameId") }
+
+        if (game.status == GameStatus.FINISHED) {
+            throw RuntimeException("Game ${game.id} is already finished.")
+        }
+
+        val newError = MabouleError(gameEntity = game)
+        mabouleRepository.save(newError)
+
+        val totalErrors = mabouleRepository.countByGameEntityId(gameId)
         emitters[gameId]?.send(
             SseEmitter.event()
-                .name("game-update")
-                .data(data)
+                .name("error-event")
+                .data(GameEvent(totalErrors = totalErrors))
         )
     }
 }

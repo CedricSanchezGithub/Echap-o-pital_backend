@@ -1,4 +1,4 @@
-package org.example.kotlin_back.entity
+package org.example.kotlin_back.game
 
 import jakarta.persistence.*
 import java.time.LocalDateTime
