@@ -16,12 +16,13 @@ class StoryController(
     }
 
     @PostMapping("/generate")
-    fun generateStory(@RequestBody request: StoryRequest): String {
+    fun generateStory(@RequestBody request: StoryRequest): Map<String, String> {
         log.info("-> Received request to generate story for room: {}", request.salle)
-        return storyService.generateStory(
+        val storyText = storyService.generateStory(
             symptome = request.symptome,
             salle = request.salle,
             etat = request.etat
         )
+        return mapOf("texte" to storyText)
     }
 }
