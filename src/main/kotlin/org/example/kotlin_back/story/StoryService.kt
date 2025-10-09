@@ -17,7 +17,7 @@ class StoryService(
         private val log = LoggerFactory.getLogger(StoryService::class.java)
     }
 
-    fun generateStory(symptome: String, salle: String, etat: String): String {
+    fun generateStory(symptome: String, salle: String, etat: String): Map<String, Any> {
         val restTemplate = RestTemplate()
         val requestBody = mapOf("symptome" to symptome, "salle" to salle, "etat" to etat)
         val headers = HttpHeaders().apply {
@@ -27,14 +27,19 @@ class StoryService(
 
         return try {
             log.info("-> Calling IA API at URL: {}", iaApiUrl)
-            val response = restTemplate.postForEntity<Map<*, *>>(iaApiUrl, requestEntity)
-            val texte = response.body?.get("texte") as? String
+            val response = restTemplate.postForEntity<Map<String, Any>>(iaApiUrl, requestEntity)
             log.info("<- Successfully received story from IA API.")
 
-            texte ?: "Erreur : le texte généré est manquant ou invalide dans la réponse."
+            response.body ?: mapOf(
+                "dialogue" to "Erreur : le dialogue généré est manquant.",
+                "choix" to listOf(mapOf("id" to "continuer", "texte" to "Continuer..."))
+            )
         } catch (e: Exception) {
             log.error("!!! FAILED to communicate with IA API at {}: {}", iaApiUrl, e.message)
-            "Erreur de communication avec le générateur d’histoire IA."
+            mapOf(
+                "dialogue" to "Erreur de communication avec le générateur d’histoire IA.",
+                "choix" to listOf(mapOf("id" to "continuer", "texte" to "Réessayer"))
+            )
         }
     }
 }
