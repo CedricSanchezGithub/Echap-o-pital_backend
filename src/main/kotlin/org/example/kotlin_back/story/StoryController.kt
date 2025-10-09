@@ -17,12 +17,7 @@ class StoryController(
 
     @PostMapping("/generate")
     fun generateStory(@RequestBody request: StoryRequest): Map<String, Any> {
-        log.info("-> Received request to generate story for room: {}", request.salle)
-
-        return storyService.generateStory(
-            symptome = request.symptome,
-            salle = request.salle,
-            etat = request.etat
-        )
+        log.info("-> Received request to generate story: {}", request)
+        return storyService.generateOrContinueStory(request)
     }
 }

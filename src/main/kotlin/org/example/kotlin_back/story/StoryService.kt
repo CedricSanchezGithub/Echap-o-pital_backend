@@ -17,9 +17,18 @@ class StoryService(
         private val log = LoggerFactory.getLogger(StoryService::class.java)
     }
 
-    fun generateStory(symptome: String, salle: String, etat: String): Map<String, Any> {
+    fun generateOrContinueStory(request: StoryRequest): Map<String, Any> {
         val restTemplate = RestTemplate()
-        val requestBody = mapOf("symptome" to symptome, "salle" to salle, "etat" to etat)
+
+        // On choisit le corps de la requête en fonction de la présence de choice_id
+        val requestBody = if (request.choiceId != null) {
+            log.info("-> Continuing story with choice_id: {}", request.choiceId)
+            mapOf("choice_id" to request.choiceId)
+        } else {
+            log.info("-> Generating new story for room: {}", request.salle)
+            mapOf("symptome" to request.symptome, "salle" to request.salle, "etat" to request.etat)
+        }
+
         val headers = HttpHeaders().apply {
             contentType = MediaType.APPLICATION_JSON
         }
@@ -28,18 +37,19 @@ class StoryService(
         return try {
             log.info("-> Calling IA API at URL: {}", iaApiUrl)
             val response = restTemplate.postForEntity<Map<String, Any>>(iaApiUrl, requestEntity)
-            log.info("<- Successfully received story from IA API.")
+            log.info("<- Successfully received response from IA API.")
 
-            response.body ?: mapOf(
-                "dialogue" to "Erreur : le dialogue généré est manquant.",
-                "choix" to listOf(mapOf("id" to "continuer", "texte" to "Continuer..."))
-            )
+            response.body ?: errorResponse("La réponse de l'IA est vide.")
         } catch (e: Exception) {
             log.error("!!! FAILED to communicate with IA API at {}: {}", iaApiUrl, e.message)
-            mapOf(
-                "dialogue" to "Erreur de communication avec le générateur d’histoire IA.",
-                "choix" to listOf(mapOf("id" to "continuer", "texte" to "Réessayer"))
-            )
+            errorResponse("Erreur de communication avec le générateur d’histoire IA.")
         }
+    }
+
+    private fun errorResponse(message: String): Map<String, Any> {
+        return mapOf(
+            "dialogue" to message,
+            "choix" to listOf(mapOf("id" to "continuer", "texte" to "Continuer..."))
+        )
     }
 }
